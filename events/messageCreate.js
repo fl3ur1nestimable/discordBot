@@ -1,5 +1,6 @@
 // events/messageCreate.js
 const UserActivity = require('../models/userActivity');
+const logMessage = require('../tasks/logMessage');
 
 module.exports = {
     name: 'messageCreate',
@@ -26,8 +27,6 @@ module.exports = {
             console.error('Error updating user activity:', error);
         }
 
-        const channel = message.guild.channels.cache.find(ch => ch.name === 'logs');
-        if (!channel) return;
-        channel.send(`Message sent by ${message.author.tag}: ${message.content}`);
+        logMessage(message);
     },
 };

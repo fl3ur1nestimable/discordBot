@@ -12,6 +12,5 @@ module.exports = {
         await wait(5000);
 		await interaction.editReply({ content: 'Pong again!', ephemeral: true });
         const message = await interaction.fetchReply();
-        console.log(message);
 	},
 };

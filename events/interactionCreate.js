@@ -1,5 +1,4 @@
-const { Events, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
-const UserActivity = require('../models/userActivity');
+const { Events, Collection} = require('discord.js');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -44,24 +43,14 @@ module.exports = {
                 }
             }
         } else if (interaction.isButton()) {
-            if (interaction.customId === 'click_to_claim') {
-                try {
-                    const userActivity = await UserActivity.findOne({ where: { user_id: interaction.user.id } });
-                    if (userActivity) {
-                        await userActivity.update({ gift_received: false });
-                        await interaction.update({
-                            content: 'Tu as bien reçu ton cadeau !',
-                            components: [],
-                        });
-
-                        console.log(`User ${interaction.user.tag} claimed their reward.`);
-                    } else {
-                        await interaction.reply({ content: 'User activity record not found.', ephemeral: true });
-                    }
-                } catch (error) {
-                    console.error('Error handling button interaction:', error);
-                    await interaction.reply({ content: 'There was an error while processing your request!', ephemeral: true });
-                }
+            // find the button handler
+            const buttonEventPath = `../buttonEvents/${interaction.customId}.js`;
+            try {
+                const buttonEvent = require(buttonEventPath);
+                buttonEvent(interaction);
+            } catch (error) {
+                console.error('Error handling button interaction:', error);
+                await interaction.reply({ content: 'There was an error while processing your request!', ephemeral: true });
             }
         }
     },
