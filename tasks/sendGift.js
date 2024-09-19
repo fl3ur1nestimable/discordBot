@@ -29,7 +29,6 @@ const sendGift = async (client) => {
                         components: [row] 
                     });
 
-                    //set the gift_received flag to true
                     await user.update({ gift_received: true });
 
                     console.log(`Sent DM to ${guildMember.tag}`);
